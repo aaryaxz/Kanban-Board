@@ -17,12 +17,23 @@ export function useCards() {
     function deleteCard(cardId) {
 
         let upd_data = data.filter((card)=>card.id != cardId)
-        console.log(upd_data)
+        // console.log(upd_data)
         setData(upd_data)
     }
 
+    function updateCard(content,cardId){
+        let upd_data = data.map((card)=>{
+            if(card.id == cardId){
+                return {...card,content:content}
+            }else{
+                return card
+            }
+        })
+        setData(upd_data)
+    }
     return {
         addCard,
-        deleteCard
+        deleteCard,
+        updateCard
     }
 }
