@@ -1,6 +1,5 @@
 import Column from "./Column"
 
-
 const Board = () => {
     const columns = [
         {
@@ -33,7 +32,7 @@ const Board = () => {
     
     return (
         <div className="w-full h-full flex">
-            {columns.map((column, index)=>{
+            {columns.map((column)=>{
                 return <Column key={column.id} column={column} />
             })}
         </div>

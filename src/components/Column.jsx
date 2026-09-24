@@ -4,7 +4,6 @@ import Card from "./Card"
 import { TaskContext } from "../context/TaskContext"
 
 const Column = ({ column}) => {
-    const primaryColor = column?.primaryBg
     const secondaryColor = column?.secondaryBg
     const accentColor = column?.accentBg
     const {addCard} = useCards()
@@ -27,7 +26,7 @@ const Column = ({ column}) => {
                             style={{ backgroundColor: accentColor }}
                             className="w-9 h-9 flex items-center justify-center text-sm font-bold border border-black  rounded-full font-[Poppins-Light] shadow-[1px_1.5px_0px_0px_#000]"
                         >
-                            {column?.numberOfCards}
+                            {curr_cards.length}
                         </span>
                     </div>
                     <button
@@ -56,8 +55,7 @@ const Column = ({ column}) => {
                         </button>
                     </div>
                     <div className=" min-h-fit w-full flex flex-wrap gap-20">
-                        
-                        {curr_cards.map((card,index)=>{
+                        {curr_cards.map((card)=>{
                             return <Card key={card.id} card={card} secondaryColor={secondaryColor}/>
                         })}
                     </div>
