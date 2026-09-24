@@ -4,6 +4,7 @@ import { TaskContext } from './context/TaskContext'
 
 const App = () => {
   const [data, setData] = useState([])
+  // console.log(data)
   return (
     <TaskContext.Provider value={{data, setData}}>
       <Board/>

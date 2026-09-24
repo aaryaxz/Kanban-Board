@@ -31,9 +31,46 @@ export function useCards() {
         })
         setData(upd_data)
     }
+
+    function moveCardForward(cardId,index,columns){
+        if(index < columns.length -1){
+            let newindex = index+1
+            let newcol = columns[newindex].id
+    
+            let upd_data = data.map((card)=>{
+                if(card.id == cardId){
+                    return {...card,columnId:newcol}
+                }else{
+                    return card
+                }
+            })
+            setData(upd_data)
+        }else{
+            console.log('Index out of range!')
+        }
+    }       
+    function moveCardBackward(cardId,index,columns){
+        if( index > 0 ){
+            let newindex = index-1
+            let newcol = columns[newindex].id
+    
+            let upd_data = data.map((card)=>{
+                if(card.id == cardId){
+                    return {...card,columnId:newcol}
+                }else{
+                    return card
+                }
+            })
+            setData(upd_data)
+        }else{
+            console.log('Index out of range!')
+        }
+    }   
     return {
         addCard,
         deleteCard,
-        updateCard
+        updateCard,
+        moveCardForward,
+        moveCardBackward
     }
 }

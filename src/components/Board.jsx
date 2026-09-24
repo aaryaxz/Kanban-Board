@@ -32,8 +32,8 @@ const Board = () => {
     
     return (
         <div className="w-full h-full flex">
-            {columns.map((column)=>{
-                return <Column key={column.id} column={column} />
+            {columns.map((column, index)=>{
+                return <Column key={column.id} index={index} column={column} columns={columns} />
             })}
         </div>
 

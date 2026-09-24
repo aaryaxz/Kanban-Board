@@ -3,7 +3,7 @@ import {useCards} from "../hooks/useCards"
 import Card from "./Card"
 import { TaskContext } from "../context/TaskContext"
 
-const Column = ({ column}) => {
+const Column = ({ column, index,columns}) => {
     const secondaryColor = column?.secondaryBg
     const accentColor = column?.accentBg
     const {addCard} = useCards()
@@ -56,7 +56,7 @@ const Column = ({ column}) => {
                     </div>
                     <div className=" min-h-fit w-full flex flex-wrap gap-20">
                         {curr_cards.map((card)=>{
-                            return <Card key={card.id} card={card} secondaryColor={secondaryColor}/>
+                            return <Card key={card.id} column={column} card={card} secondaryColor={secondaryColor} index={index} columns={columns}/>
                         })}
                     </div>
                 </div>
