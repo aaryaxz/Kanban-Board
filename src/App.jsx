@@ -1,12 +1,14 @@
 import Board from './components/Board'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { TaskContext } from './context/TaskContext'
+import Navbar from './components/Navbar'
 
 const App = () => {
   const [data, setData] = useState([])
-  // console.log(data)
+  const [searchquery, setSearchQuery] = useState('')
   return (
-    <TaskContext.Provider value={{data, setData}}>
+    <TaskContext.Provider value={{data, setData, searchquery,setSearchQuery}}>
+      <Navbar/>
       <Board/>
     </TaskContext.Provider>
   )

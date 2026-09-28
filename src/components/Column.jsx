@@ -7,15 +7,24 @@ const Column = ({ column, index, columns }) => {
     const secondaryColor = column?.secondaryBg;
     const accentColor = column?.accentBg;
     const { addCard } = useCards();
-    const { data } = useContext(TaskContext);
+    const { data, searchquery } = useContext(TaskContext);
 
-    let curr_cards = data.filter((card) => card.columnId === column.id);
+    let filtered_cards = data.filter((card) => {
+        const belongsToColumn = card.columnId === column.id
+        const matchesSearch = card.content.toLowerCase().includes(searchquery.toLowerCase())
+        if(searchquery!==''){
+            return belongsToColumn && matchesSearch;
+        }
+        return belongsToColumn
+        
+    });
+    
 
     return (
-        <div className="relative w-full sm:w-80 md:w-153 shrink-0 flex flex-col min-h-screen border-r border-black/10 bg-[#ededed]/60 font-poppins overflow-hidden">
+        <div className="relative w-full sm:w-80 md:w-153 shrink-0 flex flex-col min-h-screen border-r-2 bg-[#f1f1f1] font-poppins overflow-hidden ">
             {/* Column Content — blurs when modal is open */}
             <div
-                className={`flex flex-col flex-1 px-12 py-6 transition-all duration-300 `}
+                className={`flex flex-col flex-1 px-10 py-6 transition-all duration-300 `}
             >
                 {/* Header */}
                 <div className="flex items-center justify-between h-fit py-3 ">
@@ -27,7 +36,7 @@ const Column = ({ column, index, columns }) => {
                             style={{ backgroundColor: accentColor }}
                             className="w-9 h-9 flex items-center justify-center text-sm font-bold border border-black  rounded-full font-[Poppins-Light] shadow-[1px_1.5px_0px_0px_#000]"
                         >
-                            {curr_cards.length}
+                            {filtered_cards.length}
                         </span>
                     </div>
                     <button
@@ -35,7 +44,7 @@ const Column = ({ column, index, columns }) => {
                         className="text-2xl  font-light text-black px-1.5 cursor-pointer font-[Poppins-Light] h-8 hover:bg-(--accent-color)
                         
                         border-2 border-black  shadow-[3px_3px_0px_0px_#000] hover:translate-x-px hover:translate-y-px hover:shadow-[1px_1px_0px_0px_#000] active:translate-x-0.75 active:translate-y-0.75 active:shadow-none transition-all
-                        
+                        bg-white
                         "
                         onClick={() => addCard(column?.id)}
                     >
@@ -44,7 +53,7 @@ const Column = ({ column, index, columns }) => {
                 </div>
 
                 {/* Content Area */}
-                <div className={`flex-1 flex flex-col items-center py-10`}>
+                <div className={`flex-1 flex flex-col  py-10 `}>
                     <div className="hidden flex-col items-center gap-4">
                         <p className="text-gray-800 text-[1.4rem] font-medium font-[Poppins-Regular]">
                             No Tasks Yet!
@@ -56,8 +65,8 @@ const Column = ({ column, index, columns }) => {
                             <span>+</span> ADD TASK
                         </button>
                     </div>
-                    <div className=" min-h-fit w-full flex flex-wrap gap-20">
-                        {curr_cards.map((card) => {
+                    <div className=" min-h-fit w-full flex justify-center flex-wrap gap-20">
+                        {filtered_cards.map((card) => {
                             return (
                                 <Card
                                     key={card.id}
