@@ -9,17 +9,19 @@ const Column = ({ column, index, columns }) => {
     const { addCard } = useCards();
     const { data, searchquery } = useContext(TaskContext);
 
+    let columnCardLen = data.filter((card)=>card.columnId === column.id).length
+
     let filtered_cards = data.filter((card) => {
-        const belongsToColumn = card.columnId === column.id
-        const matchesSearch = card.content.toLowerCase().includes(searchquery.toLowerCase())
-        if(searchquery!==''){
+        const belongsToColumn = card.columnId === column.id;
+        const matchesSearch = card.content
+            .toLowerCase()
+            .includes(searchquery.toLowerCase());
+        if (searchquery !== "") {
             return belongsToColumn && matchesSearch;
         }
-        return belongsToColumn
-        
+        return belongsToColumn;
     });
-    
-
+    console.log(filtered_cards)
     return (
         <div className="relative w-full sm:w-80 md:w-153 shrink-0 flex flex-col min-h-screen border-r-2 bg-[#f1f1f1] font-poppins overflow-hidden ">
             {/* Column Content — blurs when modal is open */}
@@ -46,39 +48,53 @@ const Column = ({ column, index, columns }) => {
                         border-2 border-black  shadow-[3px_3px_0px_0px_#000] hover:translate-x-px hover:translate-y-px hover:shadow-[1px_1px_0px_0px_#000] active:translate-x-0.75 active:translate-y-0.75 active:shadow-none transition-all
                         bg-white
                         "
-                        onClick={() => addCard(column?.id)}
+                        onClick={() =>{
+                            addCard(column?.id)
+                        } }
                     >
                         +
                     </button>
                 </div>
 
                 {/* Content Area */}
-                <div className={`flex-1 flex flex-col  py-10 `}>
-                    <div className="hidden flex-col items-center gap-4">
-                        <p className="text-gray-800 text-[1.4rem] font-medium font-[Poppins-Regular]">
-                            No Tasks Yet!
-                        </p>
-                        <button
-                            style={{ backgroundColor: accentColor }}
-                            className="px-6 py-2.5 text-[1.7rem] font-black tracking-wider uppercase border-2 border-black rounded-sm shadow-[4px_4px_0px_0px_#000] hover:translate-x-px hover:translate-y-px hover:shadow-[2px_2px_0px_0px_#000] active:translate-x-0.75 active:translate-y-0.75 active:shadow-none transition-all cursor-pointer font-[Poppins-Light]"
-                        >
-                            <span>+</span> ADD TASK
-                        </button>
-                    </div>
-                    <div className=" min-h-fit w-full flex justify-center flex-wrap gap-20">
-                        {filtered_cards.map((card) => {
-                            return (
-                                <Card
-                                    key={card.id}
-                                    column={column}
-                                    card={card}
-                                    secondaryColor={secondaryColor}
-                                    index={index}
-                                    columns={columns}
-                                />
-                            );
-                        })}
-                    </div>
+                <div
+                    className={`flex-1 flex flex-col items-center ${filtered_cards.length === 0 ? "justify-center" : ""}  py-10 `}
+                >
+                    {filtered_cards.length > 0 ? (
+                        <div className=" min-h-fit w-full flex justify-center flex-wrap gap-20">
+                            {filtered_cards.map((card) => {
+                                return (
+                                    <Card
+                                        key={card.id}
+                                        card={card}
+                                        secondaryColor={secondaryColor}
+                                        index={index}
+                                        columns={columns}
+                                    />
+                                );
+                            })}
+                        </div>
+                    ) : searchquery !== "" && columnCardLen>0 ? (
+                        <div className="flex-col items-center justify-center">
+                            <p className="text-red-600 text-[1.4rem] font-medium font-[Poppins-Regular] text-center">
+                                No Match Found!
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="flex-col items-center gap-4">
+                            <p className="text-gray-800 text-[1.4rem] font-medium font-[Poppins-Regular] text-center">
+                                No Tasks Yet!
+                            </p>
+                            <button
+                                onClick={() => addCard(column?.id)}
+                                style={{ backgroundColor: accentColor }}
+                                className="px-6 py-2.5 text-[1.7rem] font-black tracking-wider uppercase border-2 border-black rounded-sm shadow-[4px_4px_0px_0px_#000] hover:translate-x-px hover:translate-y-px hover:shadow-[2px_2px_0px_0px_#000] active:translate-x-0.75 active:translate-y-0.75 active:shadow-none transition-all cursor-pointer font-[Poppins-Light]"
+                            >
+                                <span>+</span> ADD TASK
+                            </button>
+                        </div>
+
+                    )}
                 </div>
             </div>
         </div>

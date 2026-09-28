@@ -2,7 +2,7 @@ import { Pen, Trash, ChevronRight, ChevronLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCards } from "../hooks/useCards";
 
-const Card = ({ card, secondaryColor, index, columns }) => {
+const Card = ({ card, secondaryColor, index, columns}) => {
     const { deleteCard, updateCard, moveCard } = useCards();
 
     const inputRef = useRef(null);

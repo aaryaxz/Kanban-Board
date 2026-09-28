@@ -5,7 +5,6 @@ const Board = () => {
         {
             id: 'todo',
             title: 'Todo',
-            numberOfCards: 0,
             primaryBg: '#FFD23D',
             secondaryBg: '#FFE74F',
             tertiaryBg: '#FFE960',
@@ -13,7 +12,6 @@ const Board = () => {
         },       {
             id: 'inprogress',
             title: 'In Progress',
-            numberOfCards: 0,
             primaryBg: '#4790F6',
             secondaryBg: '#4BB4F4',
             tertiaryBg: '#95BCF4',
@@ -22,7 +20,6 @@ const Board = () => {
         {
             id: 'done',
             title: 'Done',
-            numberOfCards: 0,
             primaryBg: '#8AFF24',
             secondaryBg: '#9AFF41',
             tertiaryBg: '#B0FF6B',
