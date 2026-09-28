@@ -2,7 +2,7 @@ import { Search } from "lucide-react";
 import { useContext } from "react";
 import { TaskContext } from "../context/TaskContext";
 const Searchbar = () => {
-    const {setSearchQuery} = useContext(TaskContext)
+    const {searchquery, setSearchQuery} = useContext(TaskContext)
 
     return (
         <div

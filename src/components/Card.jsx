@@ -2,7 +2,8 @@ import { Pen, Trash, ChevronRight, ChevronLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCards } from "../hooks/useCards";
 
-const Card = ({ card, secondaryColor, index, columns}) => {
+const Card = ({ card, secondaryColor, index}) => {
+    
     const { deleteCard, updateCard, moveCard } = useCards();
 
     const inputRef = useRef(null);
@@ -60,14 +61,14 @@ const Card = ({ card, secondaryColor, index, columns}) => {
 
             <div className="move-card-btn bg-amber-500 absolute bottom-0 border flex justify-center items-center">
                 <button
-                    onClick={() => moveCard(card.id, index, columns, -1)}
+                    onClick={() => moveCard(card.id, index, -1)}
                     className={`border-r left-btn cursor-pointer ${index == 0 ? "hidden" : "block"}`}
                 >
                     <ChevronLeft size={24} />
                 </button>
                 <button
-                    onClick={() => moveCard(card.id, index, columns, +1)}
-                    className={`right-btn cursor-pointer ${index == columns.length - 1 ? "hidden" : "block"}`}
+                    onClick={() => moveCard(card.id, index, +1)}
+                    className={`right-btn cursor-pointer ${index == 2 ? "hidden" : "block"}`}
                 >
                     <ChevronRight size={24} />
                 </button>

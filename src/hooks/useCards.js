@@ -1,10 +1,11 @@
 import { nanoid } from "nanoid";
 import { useContext } from "react";
 import { TaskContext } from "../context/TaskContext";
+import { ColumnContext } from "../context/ColumnContext";
 
 export function useCards() {
     const { data, setData } = useContext(TaskContext);
-    
+    const {columns} = useContext(ColumnContext)
     function addCard(columnId) {
         let card = {
             id: nanoid(),
@@ -29,7 +30,7 @@ export function useCards() {
         setData(upd_data);
     }
 
-    function moveCard(cardId, index, columns, direction) {
+    function moveCard(cardId, index, direction) {
         let newindex = index + (direction)
 
         let newcol = columns[newindex].id;

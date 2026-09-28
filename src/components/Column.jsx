@@ -3,7 +3,7 @@ import { useCards } from "../hooks/useCards";
 import Card from "./Card";
 import { TaskContext } from "../context/TaskContext";
 
-const Column = ({ column, index, columns }) => {
+const Column = ({ column, index}) => {
     const secondaryColor = column?.secondaryBg;
     const accentColor = column?.accentBg;
     const { addCard } = useCards();
@@ -69,7 +69,6 @@ const Column = ({ column, index, columns }) => {
                                         card={card}
                                         secondaryColor={secondaryColor}
                                         index={index}
-                                        columns={columns}
                                     />
                                 );
                             })}
