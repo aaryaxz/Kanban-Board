@@ -1,11 +1,11 @@
 import { Pen, Trash, ChevronRight, ChevronLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCards } from "../hooks/useCards";
+import Star from "./Star";
 
-const Card = ({ card, secondaryColor, index}) => {
-    
-    const { deleteCard, updateCard, moveCard } = useCards();
+const Card = ({ card, secondaryColor, index }) => {
 
+    const { deleteCard, updateContent, moveCard } = useCards();
     const inputRef = useRef(null);
     const [isEditing, setIsEditing] = useState(false);
 
@@ -15,7 +15,6 @@ const Card = ({ card, secondaryColor, index}) => {
         const end = inputRef.current.value.length;
         inputRef.current.setSelectionRange(end, end);
     }, [isEditing]);
-
     const editCard = () => {
         setIsEditing(true);
     };
@@ -25,6 +24,11 @@ const Card = ({ card, secondaryColor, index}) => {
             style={{ backgroundColor: secondaryColor }}
             className={`relative w-47 h-47  border-2  group shadow-[4px_4px_0px_0px_#000] hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#000] transition-all`}
         >
+            <div className="hidden group-hover:flex items-center justify-center gap-1 absolute top-[-10px] left-14 ">
+                {Array.from({ length: 3 }, (_, index) => {
+                    return <Star key={index} val={index + 1} cardId={card.id} fill={index < card.priority ? '#FF59FF' : 'white'} />
+                })}
+            </div>
             <button
                 type="button"
                 aria-label="Edit task"
@@ -45,9 +49,9 @@ const Card = ({ card, secondaryColor, index}) => {
                     }
                 }}
                 aria-label="Task content"
-                onChange={(event) => updateCard(event.target.value, card.id)}
+                onChange={(event) => updateContent(event.target.value, card.id)}
                 value={card.content}
-                className={`w-full h-full pt-4 px-10 pb-16 text-center resize-none outline-none ${isEditing ? "cursor-text" : "cursor-default"} ${isEditing ? "select-none" : "select-auto"}`}
+                className={`w-full h-full pt-6 px-10 pb-16 text-center resize-none outline-none ${isEditing ? "cursor-text" : "cursor-default"} ${isEditing ? "select-none" : "select-auto"}`}
             />
 
             <button

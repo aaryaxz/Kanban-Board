@@ -21,7 +21,6 @@ const Column = ({ column, index}) => {
         }
         return belongsToColumn;
     });
-    console.log(filtered_cards)
     return (
         <div className="relative w-full sm:w-80 md:w-153 shrink-0 flex flex-col min-h-screen border-r-2 bg-[#f1f1f1] font-poppins overflow-hidden ">
             {/* Column Content — blurs when modal is open */}
