@@ -24,9 +24,9 @@ const Card = ({ card, secondaryColor, index }) => {
             style={{ backgroundColor: secondaryColor }}
             className={`relative w-47 h-47  border-2  group shadow-[4px_4px_0px_0px_#000] hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#000] transition-all`}
         >
-            <div className="hidden group-hover:flex items-center justify-center gap-1 absolute top-[-10px] left-14 ">
+            <div className={`${card.priority>0?'flex':'hidden' } group-hover:flex items-center justify-center gap-1 absolute left-1/2 -translate-x-1/2 top-[-12px] `}>
                 {Array.from({ length: 3 }, (_, index) => {
-                    return <Star key={index} val={index + 1} cardId={card.id} fill={index < card.priority ? '#FF59FF' : 'white'} />
+                    return <Star key={index} index={index} val={index + 1} card={card} cardId={card.id} fill={index < card.priority ? '#FF59FF' : 'white'} />
                 })}
             </div>
             <button
