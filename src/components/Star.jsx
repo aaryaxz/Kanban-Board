@@ -25,3 +25,9 @@ const Star = ({ size = 20, stroke = "black",val,cardId,card,fill }) => {
 };
 
 export default Star;
+
+
+// Priority = 3, click star 3 → Priority becomes 2.
+// Priority = 3, click star 2 → Priority becomes 2.
+// Priority = 2, click star 2 → Priority becomes 1.
+// Priority = 1, click star 1 → Priority becomes 0.
