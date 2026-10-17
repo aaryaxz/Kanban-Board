@@ -23,12 +23,30 @@ const Card = ({ card, secondaryColor, index }) => {
     const oneweek = curr_date + 7;
     const month = today.toLocaleDateString("en-US", { month: "short" });
 
+    const pickerRef = useRef(null);
+
     useEffect(() => {
         if (!isEditing) return;
         inputRef.current.focus();
         const end = inputRef.current.value.length;
         inputRef.current.setSelectionRange(end, end);
     }, [isEditing]);
+
+    useEffect(() => {
+        if (!showpicker) return;
+        const handlePointerDown = (event) => {
+            if (pickerRef.current?.contains(event.target)) return;
+
+            setShowpicker(false);
+        };
+
+        document.addEventListener("pointerdown", handlePointerDown);
+
+        return () => {
+            document.removeEventListener("pointerdown", handlePointerDown);
+        };
+    }, [showpicker]);
+
     const editCard = () => {
         setIsEditing(true);
     };
@@ -39,8 +57,9 @@ const Card = ({ card, secondaryColor, index }) => {
     };
 
     return (
-        <div onContextMenu={handleRightClick} className="relative ">
+        <div className="relative ">
             <div
+                onContextMenu={handleRightClick}
                 style={{ backgroundColor: secondaryColor }}
                 className={` w-47 h-47  group border-2 shadow-[4px_4px_0px_0px_#000] hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#000] transition-[transform,shadow] duration-0 [transition-duration:500ms,00ms]
                 transform-3d  relative z-50
@@ -106,7 +125,7 @@ const Card = ({ card, secondaryColor, index }) => {
 
                 {/* Back */}
                 <div
-                    className={`absolute ${showpicker ? "z-50" : "z-0"} inset-0  flex flex-col  backface-hidden transform-[rotateY(180deg)]  pt-5 gap-6 `}
+                    className={`absolute ${showpicker ? "z-50" : "z-0"} inset-0  flex flex-col  backface-hidden transform-[rotateY(180deg)]  pt-5 gap-6 cursor-text`}
                 >
                     <div
                         className={`deadline  flex flex-col gap-8 ${isBtnClicked ? "hidden" : "flex"}`}
@@ -163,8 +182,11 @@ const Card = ({ card, secondaryColor, index }) => {
                         >
                             <X size={12} color="white" />
                         </button>
-                        <div className="w-full h-full flex items-center justify-center ">
-                            <p className=" font-[ArchivoBlack-Regular] uppercase text-3xl">
+                        <div
+                            
+                            className="w-full h-full flex items-center justify-center "
+                        >
+                            <p onClick={() => setShowpicker(true)} className=" font-[ArchivoBlack-Regular] uppercase text-3xl cursor-pointer">
                                 {dueDate}
                             </p>
                         </div>
@@ -189,90 +211,92 @@ const Card = ({ card, secondaryColor, index }) => {
                 </div>
             </div>
             {showpicker && (
-                <ClickAwayListener onClickAway={() => setShowpicker(false)}>
-                    <div className="mt-3 absolute z-100 left-20 top-3 ">
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <StaticDatePicker
-                                onChange={(newValue) => {
-                                    if (newValue) {
-                                        setDueDate(`
+                <div
+                    ref={pickerRef}
+                    onContextMenu={(e) => e.preventDefault()}
+                    className="mt-3 absolute z-100 left-20 top-3 "
+                >
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <StaticDatePicker
+                            onChange={(newValue) => {
+                                if (newValue) {
+                                    setDueDate(`
                                                         ${newValue.date()} 
                                                         ${newValue.format("MMM")}
                                                     `);
-                                        setIsBtnClicked(true);
-                                        setShowpicker(false);
-                                    }
-                                }}
-                                onAccept={() => setShowpicker(false)}
-                                onClose={() => setShowpicker(false)}
-                                slotProps={{
-                                    actionBar: {
-                                        actions: ["cancel", "accept"],
-                                    },
-                                }}
-                                sx={{
-                                    width: "fit-content",
-                                    minWidth: 0,
-                                    border: "1px solid black",
-                                    borderRadius: "0px",
-                                    overflow: "hidden",
+                                    setIsBtnClicked(true);
+                                    setShowpicker(false);
+                                }
+                            }}
+                            onAccept={() => setShowpicker(false)}
+                            onClose={() => setShowpicker(false)}
+                            slotProps={{
+                                actionBar: {
+                                    actions: ["cancel", "accept"],
+                                },
+                            }}
+                            sx={{
+                                width: "fit-content",
+                                minWidth: 0,
+                                border: "1px solid black",
+                                borderRadius: "0px",
+                                overflow: "hidden",
 
-                                    // Hide the large top heading
-                                    "& .MuiPickersToolbar-root": {
-                                        display: "none",
-                                    },
+                                // Hide the large top heading
+                                "& .MuiPickersToolbar-root": {
+                                    display: "none",
+                                },
 
-                                    // Reduce the calendar container size
-                                    "& .MuiDateCalendar-root": {
-                                        width: "260px",
-                                        height: "270px",
-                                        maxHeight: "270px",
-                                    },
+                                // Reduce the calendar container size
+                                "& .MuiDateCalendar-root": {
+                                    width: "260px",
+                                    height: "270px",
+                                    maxHeight: "270px",
+                                },
 
-                                    // Reduce the height of the date grid
-                                    "& .MuiDayCalendar-monthContainer": {
-                                        position: "relative",
-                                    },
+                                // Reduce the height of the date grid
+                                "& .MuiDayCalendar-monthContainer": {
+                                    position: "relative",
+                                },
 
-                                    // Smaller date buttons
-                                    "& .MuiPickersDay-root": {
-                                        width: "30px",
-                                        height: "30px",
-                                        fontSize: "12px",
-                                        margin: "0 2px",
-                                    },
+                                // Smaller date buttons
+                                "& .MuiPickersDay-root": {
+                                    width: "30px",
+                                    height: "30px",
+                                    fontSize: "12px",
+                                    margin: "0 2px",
+                                },
 
-                                    // Compact weekday headings
-                                    "& .MuiDayCalendar-weekDayLabel": {
-                                        width: "30px",
-                                        height: "30px",
-                                        margin: "0 2px",
-                                        fontSize: "11px",
-                                    },
+                                // Compact weekday headings
+                                "& .MuiDayCalendar-weekDayLabel": {
+                                    width: "30px",
+                                    height: "30px",
+                                    margin: "0 2px",
+                                    fontSize: "11px",
+                                },
 
-                                    // Compact month/year header
-                                    "& .MuiPickersCalendarHeader-root": {
-                                        minHeight: "42px",
-                                        marginTop: "4px",
-                                        marginBottom: "4px",
-                                        paddingLeft: "12px",
-                                        paddingRight: "8px",
-                                    },
+                                // Compact month/year header
+                                "& .MuiPickersCalendarHeader-root": {
+                                    minHeight: "42px",
+                                    marginTop: "4px",
+                                    marginBottom: "4px",
+                                    paddingLeft: "12px",
+                                    paddingRight: "8px",
+                                },
 
-                                    // Reduce space below calendar
-                                    "& .MuiPickersLayout-contentWrapper": {
-                                        padding: 0,
-                                    },
+                                // Reduce space below calendar
+                                "& .MuiPickersLayout-contentWrapper": {
+                                    padding: 0,
+                                },
 
-                                    // Compact action buttons
-                                    "& .MuiDialogActions-root": {
-                                        padding: "4px 8px",
-                                    },
-                                }}
-                            />
-                        </LocalizationProvider>
-                    </div>
-                </ClickAwayListener>
+                                // Compact action buttons
+                                "& .MuiDialogActions-root": {
+                                    padding: "4px 8px",
+                                },
+                            }}
+                        />
+                    </LocalizationProvider>
+                </div>
             )}
         </div>
     );
