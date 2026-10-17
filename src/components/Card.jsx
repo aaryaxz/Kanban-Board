@@ -39,11 +39,11 @@ const Card = ({ card, secondaryColor, index }) => {
     };
 
     return (
-        <div onContextMenu={handleRightClick} className="perspective-[1000px]">
+        <div onContextMenu={handleRightClick} className="relative ">
             <div
                 style={{ backgroundColor: secondaryColor }}
                 className={` w-47 h-47  group border-2 shadow-[4px_4px_0px_0px_#000] hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#000] transition-[transform,shadow] duration-0 [transition-duration:500ms,00ms]
-                transform-3d 
+                transform-3d  relative z-50
                 ${isFlipped ? "transform-[rotateY(180deg)]" : ""}`}
             >
                 {/* Front */}
@@ -105,7 +105,9 @@ const Card = ({ card, secondaryColor, index }) => {
                 </div>
 
                 {/* Back */}
-                <div className="absolute z-50 inset-0  flex flex-col  backface-hidden transform-[rotateY(180deg)]  pt-5 gap-6 ">
+                <div
+                    className={`absolute ${showpicker ? "z-50" : "z-0"} inset-0  flex flex-col  backface-hidden transform-[rotateY(180deg)]  pt-5 gap-6 `}
+                >
                     <div
                         className={`deadline  flex flex-col gap-8 ${isBtnClicked ? "hidden" : "flex"}`}
                     >
@@ -141,101 +143,15 @@ const Card = ({ card, secondaryColor, index }) => {
                                 +1 wk
                             </button>
                             <button
-                                onClick={() =>{ 
-                                    setShowpicker(true)
+                                onClick={() => {
+                                    setShowpicker(true);
                                     setDueDate(`${oneweek} ${month}`);
-                                     
                                 }}
                                 className="border bg-white text-black font-[ArchivoBlack-Regular] shadow-[1.5px_1.5px_0px_0px_#000] hover:-translate-y-0.3 hover:-translate-x-0.5 hover:shadow-[2.3px_2.3px_0_#000] hover:bg-[#FF59FF] rounded-sm px-2 py-1 uppercase text-xs cursor-pointer transition-all"
                             >
                                 📅 Pick
                             </button>
                         </div>
-                        {showpicker && (
-                            <ClickAwayListener onClickAway={() => setShowpicker(false)}>
-                                <div className="mt-3 absolute z-60 left-5 top-20 ">
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <StaticDatePicker
-                                            onChange={(newValue) => {
-                                                if (newValue) {
-                                                    setDueDate(`
-                                                        ${newValue.date()} 
-                                                        ${newValue.format("MMM")}
-                                                    `);
-                                                    setIsBtnClicked(true);
-                                                }
-                                            }}
-                                            onAccept={() => setShowpicker(false)}
-                                            onClose={() => setShowpicker(false)}
-                                            slotProps={{
-                                                actionBar: {
-                                                    actions: ["cancel", "accept"],
-                                                },
-                                            }}
-                                            sx={{
-                                                width: "fit-content",
-                                                minWidth: 0,
-                                                border: "1px solid black",
-                                                borderRadius: "0px",
-                                                overflow: "hidden",
-
-                                                // Hide the large top heading
-                                                "& .MuiPickersToolbar-root": {
-                                                    display: "none",
-                                                },
-
-                                                // Reduce the calendar container size
-                                                "& .MuiDateCalendar-root": {
-                                                    width: "260px",
-                                                    height: "270px",
-                                                    maxHeight: "270px",
-                                                },
-
-                                                // Reduce the height of the date grid
-                                                "& .MuiDayCalendar-monthContainer": {
-                                                    position: "relative",
-                                                },
-
-                                                // Smaller date buttons
-                                                "& .MuiPickersDay-root": {
-                                                    width: "30px",
-                                                    height: "30px",
-                                                    fontSize: "12px",
-                                                    margin: "0 2px",
-                                                },
-
-                                                // Compact weekday headings
-                                                "& .MuiDayCalendar-weekDayLabel": {
-                                                    width: "30px",
-                                                    height: "30px",
-                                                    margin: "0 2px",
-                                                    fontSize: "11px",
-                                                },
-
-                                                // Compact month/year header
-                                                "& .MuiPickersCalendarHeader-root": {
-                                                    minHeight: "42px",
-                                                    marginTop: "4px",
-                                                    marginBottom: "4px",
-                                                    paddingLeft: "12px",
-                                                    paddingRight: "8px",
-                                                },
-
-                                                // Reduce space below calendar
-                                                "& .MuiPickersLayout-contentWrapper": {
-                                                    padding: 0,
-                                                },
-
-                                                // Compact action buttons
-                                                "& .MuiDialogActions-root": {
-                                                    padding: "4px 8px",
-                                                },
-                                            }}
-                                        />
-                                    </LocalizationProvider>
-                                </div>
-                            </ClickAwayListener>
-                        )}
                     </div>
 
                     <div
@@ -255,7 +171,8 @@ const Card = ({ card, secondaryColor, index }) => {
                     </div>
                 </div>
 
-                <div className={`move-card-btn bg-amber-500 z-20 absolute bottom-0 border flex justify-center items-center ${isFlipped ? "rotate-180" : "rotate-0"}`}
+                <div
+                    className={`move-card-btn bg-amber-500 z-20 absolute bottom-0 border flex justify-center items-center ${isFlipped ? "rotate-180" : "rotate-0"}`}
                 >
                     <button
                         onClick={() => moveCard(card.id, index, -1)}
@@ -271,6 +188,92 @@ const Card = ({ card, secondaryColor, index }) => {
                     </button>
                 </div>
             </div>
+            {showpicker && (
+                <ClickAwayListener onClickAway={() => setShowpicker(false)}>
+                    <div className="mt-3 absolute z-100 left-20 top-3 ">
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <StaticDatePicker
+                                onChange={(newValue) => {
+                                    if (newValue) {
+                                        setDueDate(`
+                                                        ${newValue.date()} 
+                                                        ${newValue.format("MMM")}
+                                                    `);
+                                        setIsBtnClicked(true);
+                                        setShowpicker(false);
+                                    }
+                                }}
+                                onAccept={() => setShowpicker(false)}
+                                onClose={() => setShowpicker(false)}
+                                slotProps={{
+                                    actionBar: {
+                                        actions: ["cancel", "accept"],
+                                    },
+                                }}
+                                sx={{
+                                    width: "fit-content",
+                                    minWidth: 0,
+                                    border: "1px solid black",
+                                    borderRadius: "0px",
+                                    overflow: "hidden",
+
+                                    // Hide the large top heading
+                                    "& .MuiPickersToolbar-root": {
+                                        display: "none",
+                                    },
+
+                                    // Reduce the calendar container size
+                                    "& .MuiDateCalendar-root": {
+                                        width: "260px",
+                                        height: "270px",
+                                        maxHeight: "270px",
+                                    },
+
+                                    // Reduce the height of the date grid
+                                    "& .MuiDayCalendar-monthContainer": {
+                                        position: "relative",
+                                    },
+
+                                    // Smaller date buttons
+                                    "& .MuiPickersDay-root": {
+                                        width: "30px",
+                                        height: "30px",
+                                        fontSize: "12px",
+                                        margin: "0 2px",
+                                    },
+
+                                    // Compact weekday headings
+                                    "& .MuiDayCalendar-weekDayLabel": {
+                                        width: "30px",
+                                        height: "30px",
+                                        margin: "0 2px",
+                                        fontSize: "11px",
+                                    },
+
+                                    // Compact month/year header
+                                    "& .MuiPickersCalendarHeader-root": {
+                                        minHeight: "42px",
+                                        marginTop: "4px",
+                                        marginBottom: "4px",
+                                        paddingLeft: "12px",
+                                        paddingRight: "8px",
+                                    },
+
+                                    // Reduce space below calendar
+                                    "& .MuiPickersLayout-contentWrapper": {
+                                        padding: 0,
+                                    },
+
+                                    // Compact action buttons
+                                    "& .MuiDialogActions-root": {
+                                        padding: "4px 8px",
+                                    },
+                                }}
+                            />
+                        </LocalizationProvider>
+                    </div>
+                </ClickAwayListener>
+            )}
         </div>
     );
 };

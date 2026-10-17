@@ -22,8 +22,7 @@ const Column = ({ column, index}) => {
         return belongsToColumn;
     });
     return (
-        <div className="relative w-full sm:w-80 md:w-153 shrink-0 flex flex-col min-h-screen border-r-2 bg-[#f1f1f1] font-poppins overflow-hidden ">
-            {/* Column Content — blurs when modal is open */}
+        <div className="relative w-full sm:w-80 md:w-153 shrink-0 flex flex-col min-h-screen border-r-2 bg-[#f1f1f1] font-poppins  ">
             <div
                 className={`flex flex-col flex-1 px-10 py-6 transition-all duration-300 `}
             >
@@ -57,7 +56,7 @@ const Column = ({ column, index}) => {
 
                 {/* Content Area */}
                 <div
-                    className={`flex-1 flex flex-col items-center ${filtered_cards.length === 0 ? "justify-center" : ""}  py-10 `}
+                    className={`flex-1 flex flex-col items-center ${filtered_cards.length === 0 ? "justify-center" : ""}  py-10  `}
                 >
                     {filtered_cards.length > 0 ? (
                         <div className=" min-h-fit w-full flex justify-center flex-wrap gap-20">
