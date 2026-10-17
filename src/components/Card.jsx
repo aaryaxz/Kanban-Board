@@ -2,28 +2,26 @@ import { Pen, Trash, ChevronRight, ChevronLeft, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCards } from "../hooks/useCards";
 import Star from "./Star";
-import dayjs from "dayjs";
-import { ClickAwayListener } from "@mui/material";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const Card = ({ card, secondaryColor, index }) => {
-    const { deleteCard, updateContent, moveCard } = useCards();
+    const { deleteCard, updateContent, updateDueDate, moveCard } = useCards();
+
     const inputRef = useRef(null);
+    const pickerRef = useRef(null);
+
     const [isEditing, setIsEditing] = useState(false);
     const [isFlipped, setIsFlipped] = useState(false);
-    const [dueDate, setDueDate] = useState("");
     const [isBtnClicked, setIsBtnClicked] = useState(false);
     const [showpicker, setShowpicker] = useState(false);
-    const today = new Date();
 
+    const today = new Date();
     const curr_date = today.getDate();
     const tmrw_date = curr_date + 1;
     const oneweek = curr_date + 7;
     const month = today.toLocaleDateString("en-US", { month: "short" });
-
-    const pickerRef = useRef(null);
 
     useEffect(() => {
         if (!isEditing) return;
@@ -47,9 +45,6 @@ const Card = ({ card, secondaryColor, index }) => {
         };
     }, [showpicker]);
 
-    const editCard = () => {
-        setIsEditing(true);
-    };
 
     const handleRightClick = (e) => {
         e.preventDefault();
@@ -89,7 +84,7 @@ const Card = ({ card, secondaryColor, index }) => {
                     <button
                         type="button"
                         aria-label="Edit task"
-                        onClick={editCard}
+                        onClick={()=>setIsEditing(true)}
                         className="absolute right-2 top-2 w-5.5 h-5.5 hidden group-hover:flex items-center justify-center cursor-pointer border bg-white shadow-[1.5px_1.5px_0px_0px_#000] rounded-sm"
                     >
                         <Pen size={12} />
@@ -125,7 +120,7 @@ const Card = ({ card, secondaryColor, index }) => {
 
                 {/* Back */}
                 <div
-                    className={`absolute ${showpicker ? "z-50" : "z-0"} inset-0  flex flex-col  backface-hidden transform-[rotateY(180deg)]  pt-5 gap-6 cursor-text`}
+                    className={`absolute ${showpicker ? "z-50" : "z-0"} inset-0  flex flex-col  backface-hidden transform-[rotateY(180deg)]  pt-5 gap-6`}
                 >
                     <div
                         className={`deadline  flex flex-col gap-8 ${isBtnClicked ? "hidden" : "flex"}`}
@@ -137,7 +132,7 @@ const Card = ({ card, secondaryColor, index }) => {
                             <button
                                 onClick={() => {
                                     setIsBtnClicked(true);
-                                    setDueDate(`${curr_date} ${month}`);
+                                    updateDueDate(curr_date, month, card.id);
                                 }}
                                 className="border bg-white text-black font-[ArchivoBlack-Regular] shadow-[1.5px_1.5px_0px_0px_#000] hover:-translate-y-0.3 hover:-translate-x-0.5 hover:shadow-[2.3px_2.3px_0_#000] hover:bg-[#FF59FF] rounded-sm px-2 py-1 uppercase text-xs cursor-pointer transition-all"
                             >
@@ -146,7 +141,7 @@ const Card = ({ card, secondaryColor, index }) => {
                             <button
                                 onClick={() => {
                                     setIsBtnClicked(true);
-                                    setDueDate(`${tmrw_date} ${month}`);
+                                    updateDueDate(tmrw_date, month, card.id);
                                 }}
                                 className="border bg-white text-black font-[ArchivoBlack-Regular] shadow-[1.5px_1.5px_0px_0px_#000] hover:-translate-y-0.3 hover:-translate-x-0.5 hover:shadow-[2.3px_2.3px_0_#000] hover:bg-[#FF59FF] rounded-sm px-2 py-1 uppercase text-xs cursor-pointer transition-all"
                             >
@@ -155,7 +150,7 @@ const Card = ({ card, secondaryColor, index }) => {
                             <button
                                 onClick={() => {
                                     setIsBtnClicked(true);
-                                    setDueDate(`${oneweek} ${month}`);
+                                    updateDueDate(oneweek, month, card.id);
                                 }}
                                 className="border bg-white text-black font-[ArchivoBlack-Regular] shadow-[1.5px_1.5px_0px_0px_#000] hover:-translate-y-0.3 hover:-translate-x-0.5 hover:shadow-[2.3px_2.3px_0_#000] hover:bg-[#FF59FF] rounded-sm px-2 py-1 uppercase text-xs cursor-pointer transition-all"
                             >
@@ -164,13 +159,13 @@ const Card = ({ card, secondaryColor, index }) => {
                             <button
                                 onClick={() => {
                                     setShowpicker(true);
-                                    setDueDate(`${oneweek} ${month}`);
                                 }}
                                 className="border bg-white text-black font-[ArchivoBlack-Regular] shadow-[1.5px_1.5px_0px_0px_#000] hover:-translate-y-0.3 hover:-translate-x-0.5 hover:shadow-[2.3px_2.3px_0_#000] hover:bg-[#FF59FF] rounded-sm px-2 py-1 uppercase text-xs cursor-pointer transition-all"
                             >
                                 📅 Pick
                             </button>
                         </div>
+                        {/* Clicking on each button updateDuedate runs with parameter curr_date, tmrw_date, oneweek_date and so on*/}
                     </div>
 
                     <div
@@ -182,12 +177,12 @@ const Card = ({ card, secondaryColor, index }) => {
                         >
                             <X size={12} color="white" />
                         </button>
-                        <div
-                            
-                            className="w-full h-full flex items-center justify-center "
-                        >
-                            <p onClick={() => setShowpicker(true)} className=" font-[ArchivoBlack-Regular] uppercase text-3xl cursor-pointer">
-                                {dueDate}
+                        <div className="w-full h-full flex items-center justify-center ">
+                            <p
+                                onClick={() => setShowpicker(true)}
+                                className=" font-[ArchivoBlack-Regular] uppercase text-3xl cursor-pointer"
+                            >
+                                {card.dueDate}
                             </p>
                         </div>
                     </div>
@@ -220,10 +215,7 @@ const Card = ({ card, secondaryColor, index }) => {
                         <StaticDatePicker
                             onChange={(newValue) => {
                                 if (newValue) {
-                                    setDueDate(`
-                                                        ${newValue.date()} 
-                                                        ${newValue.format("MMM")}
-                                                    `);
+                                    updateDueDate(newValue.date(), newValue.format("MMM"),card.id);
                                     setIsBtnClicked(true);
                                     setShowpicker(false);
                                 }

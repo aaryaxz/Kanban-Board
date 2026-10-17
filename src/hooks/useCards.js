@@ -6,12 +6,14 @@ import { ColumnContext } from "../context/ColumnContext";
 export function useCards() {
     const { data, setData } = useContext(TaskContext);
     const { columns } = useContext(ColumnContext)
+    console.log(data)
     function addCard(columnId) {
         let card = {
             id: nanoid(),
             columnId: columnId,
             content: "New Task",
             priority: 0,
+            dueDate:''
         };
         setData((prev) => [...prev, card]);
     }
@@ -42,6 +44,17 @@ export function useCards() {
         setData(upd_data);
     }
 
+    function updateDueDate(date,month, cardId){
+        let upd_data = data.map((card)=>{
+            if(card.id === cardId){
+                return {...card,dueDate:`${date} ${month}`}
+            }else{
+                return card;
+            }
+        })
+        setData(upd_data)
+    }
+
     function moveCard(cardId, index, direction) {
         let newindex = index + (direction)
 
@@ -60,6 +73,7 @@ export function useCards() {
         deleteCard,
         updateContent,
         updatePriority,
+        updateDueDate,
         moveCard,
     };
 }
