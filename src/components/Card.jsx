@@ -5,6 +5,8 @@ import Star from "./Star";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { useDraggable } from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
 
 const Card = ({ card, secondaryColor, index }) => {
     const { deleteCard, updateContent, updateDueDate, moveCard } = useCards();
@@ -51,8 +53,29 @@ const Card = ({ card, secondaryColor, index }) => {
         setIsFlipped((prev) => !prev);
     };
 
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        isDragging,
+    } = useDraggable({
+        id:card.id,
+    })
+
+    const style = {
+        transform : CSS.Translate.toString(transform),
+        opacity: isDragging ? 0.5 : 1
+    }
+
     return (
-        <div className="relative ">
+        <div 
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+        {...listeners}
+        className="relative"  
+        >
             <div
                 onContextMenu={handleRightClick}
                 style={{ backgroundColor: secondaryColor }}

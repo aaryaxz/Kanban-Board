@@ -6,7 +6,6 @@ import { ColumnContext } from "../context/ColumnContext";
 export function useCards() {
     const { data, setData } = useContext(TaskContext);
     const { columns } = useContext(ColumnContext)
-    console.log(data)
     function addCard(columnId) {
         let card = {
             id: nanoid(),
