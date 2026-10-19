@@ -1,15 +1,15 @@
-import { Pen, Trash, ChevronRight, ChevronLeft, X } from "lucide-react";
+import { Pen, Trash, X, GripVertical } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCards } from "../hooks/useCards";
 import Star from "./Star";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useDraggable } from "@dnd-kit/core";
-import { CSS } from "@dnd-kit/utilities";
+import { useDraggable } from "@dnd-kit/react";
 
 const Card = ({ card, secondaryColor, index }) => {
-    const { deleteCard, updateContent, updateDueDate, moveCard } = useCards();
+    console.log('cardIndex',index)
+    const { deleteCard, updateContent, updateDueDate } = useCards();
 
     const inputRef = useRef(null);
     const pickerRef = useRef(null);
@@ -47,35 +47,18 @@ const Card = ({ card, secondaryColor, index }) => {
         };
     }, [showpicker]);
 
-
     const handleRightClick = (e) => {
         e.preventDefault();
         setIsFlipped((prev) => !prev);
     };
 
-    const {
-        attributes,
-        listeners,
-        setNodeRef,
-        transform,
-        isDragging,
-    } = useDraggable({
-        id:card.id,
-    })
+    const { ref, isDragging } = useDraggable({
+        id: card.id,
+    });
 
-    const style = {
-        transform : CSS.Translate.toString(transform),
-        opacity: isDragging ? 0.5 : 1
-    }
 
     return (
-        <div 
-        ref={setNodeRef}
-        style={style}
-        {...attributes}
-        {...listeners}
-        className="relative"  
-        >
+        <div ref={ref} className={`relative ${isDragging ? "opacity-50" : ""}`}>
             <div
                 onContextMenu={handleRightClick}
                 style={{ backgroundColor: secondaryColor }}
@@ -107,28 +90,30 @@ const Card = ({ card, secondaryColor, index }) => {
                     <button
                         type="button"
                         aria-label="Edit task"
-                        onClick={()=>setIsEditing(true)}
+                        onClick={() => setIsEditing(true)}
                         className="absolute right-2 top-2 w-5.5 h-5.5 hidden group-hover:flex items-center justify-center cursor-pointer border bg-white shadow-[1.5px_1.5px_0px_0px_#000] rounded-sm"
                     >
                         <Pen size={12} />
                     </button>
 
                     {/* Task Content */}
-                    <textarea
-                        ref={inputRef}
-                        readOnly={!isEditing}
-                        onDoubleClick={() => setIsEditing(true)}
-                        onBlur={() => setIsEditing(false)}
-                        onMouseDown={(e) => {
-                            if (!isEditing) {
-                                e.preventDefault();
-                            }
-                        }}
-                        aria-label="Task content"
-                        onChange={(event) => updateContent(event.target.value, card.id)}
-                        value={card.content}
-                        className={`w-full h-full pt-6 px-10 pb-16 text-center resize-none outline-none ${isEditing ? "cursor-text" : "cursor-default"} ${isEditing ? "select-none" : "select-auto"}`}
-                    />
+                    {isEditing ? (
+                        <textarea
+                            ref={inputRef}
+                            autoFocus
+                            value={card.content}
+                            onChange={(e) => updateContent(e.target.value, card.id)}
+                            onBlur={() => setIsEditing(false)}
+                            className="w-full h-full resize-none outline-none"
+                        />
+                    ) : (
+                        <div
+                            onDoubleClick={() => setIsEditing(true)}
+                            className="w-full h-full mt-10 text-center"
+                        >
+                            {card.content}
+                        </div>
+                    )}
 
                     {/* Delete Button */}
                     <button
@@ -139,6 +124,7 @@ const Card = ({ card, secondaryColor, index }) => {
                     >
                         <Trash size={15} color="white" />
                     </button>
+
                 </div>
 
                 {/* Back */}
@@ -210,23 +196,6 @@ const Card = ({ card, secondaryColor, index }) => {
                         </div>
                     </div>
                 </div>
-
-                <div
-                    className={`move-card-btn bg-amber-500 z-20 absolute bottom-0 border flex justify-center items-center ${isFlipped ? "rotate-180" : "rotate-0"}`}
-                >
-                    <button
-                        onClick={() => moveCard(card.id, index, -1)}
-                        className={`border-r left-btn cursor-pointer ${index == 0 ? "hidden" : "block"}`}
-                    >
-                        <ChevronLeft size={24} />
-                    </button>
-                    <button
-                        onClick={() => moveCard(card.id, index, +1)}
-                        className={`right-btn cursor-pointer ${index == 2 ? "hidden" : "block"}`}
-                    >
-                        <ChevronRight size={24} />
-                    </button>
-                </div>
             </div>
             {showpicker && (
                 <div
@@ -238,7 +207,11 @@ const Card = ({ card, secondaryColor, index }) => {
                         <StaticDatePicker
                             onChange={(newValue) => {
                                 if (newValue) {
-                                    updateDueDate(newValue.date(), newValue.format("MMM"),card.id);
+                                    updateDueDate(
+                                        newValue.date(),
+                                        newValue.format("MMM"),
+                                        card.id,
+                                    );
                                     setIsBtnClicked(true);
                                     setShowpicker(false);
                                 }

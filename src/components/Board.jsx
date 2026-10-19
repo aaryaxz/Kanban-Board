@@ -1,36 +1,38 @@
 import { useContext } from "react"
 import Column from "./Column"
 import { ColumnContext } from "../context/ColumnContext"
-import { DndContext } from "@dnd-kit/core"
-import { TaskContext } from "../context/TaskContext"
+import { TaskContext } from "../context/TaskContext";
+import { DragDropProvider } from "@dnd-kit/react";
 
 const Board = () => {
-    const {columns} = useContext(ColumnContext)
-    const {data,setData} = useContext(TaskContext)
+    const { columns } = useContext(ColumnContext)
+    const { data, setData } = useContext(TaskContext)
 
-    function handleDragEnd(event){
-        const {active , over} = event   
-        let upd_data = data.map((task,index)=>{
-            if(task.id === active.id){
-                return {...task,columnId:over.id}
+    function handleDragEnd(event) {
+        const { source, target } = event.operation
+
+        let upd_data = data.map((task) => {
+            if (task.id === source.id) {
+                return { ...task, columnId: target.id }
             }
-            else{
+            else {
                 return task
             }
         })
         setData(upd_data)
 
-        console.log('Dragged:', active.id)
-        console.log("Dropped over: ", over.id)
+        console.log('Dragged Card:', source.id)
+        console.log('Dropped On:', target.id)
     }
+
     return (
-        <DndContext onDragEnd={handleDragEnd}>
+        <DragDropProvider onDragEnd={handleDragEnd}>
             <div className="w-full h-full flex bg-rose-500 overflow-hidden">
-                {columns.map((column, index)=>{
+                {columns.map((column, index) => {
                     return <Column key={column.id} index={index} column={column} />
                 })}
             </div>
-        </DndContext>
+        </DragDropProvider>
 
     )
 }

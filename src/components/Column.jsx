@@ -2,7 +2,8 @@ import { useContext } from "react";
 import { useCards } from "../hooks/useCards";
 import Card from "./Card";
 import { TaskContext } from "../context/TaskContext";
-import { useDroppable } from "@dnd-kit/core";
+import { useDroppable } from "@dnd-kit/react";
+
 
 const Column = ({ column, index}) => {
     const secondaryColor = column?.secondaryBg;
@@ -23,12 +24,12 @@ const Column = ({ column, index}) => {
         return belongsToColumn;
     });
 
-    const {setNodeRef, isOver} = useDroppable({
-        id:column.id,
+    const {ref, isDropTarget} = useDroppable({
+        id:column.id
     })
     
     return (
-        <div ref={setNodeRef} className={`w-full sm:w-80 md:w-153 shrink-0 flex flex-col min-h-screen border-r-2 bg-[#f1f1f1] font-poppins  `}>
+        <div ref={ref} className={`w-full sm:w-80 md:w-153 shrink-0 flex flex-col min-h-screen border-r-2 bg-[#f1f1f1] font-poppins  `}>
             <div
                 className={`flex flex-col flex-1 px-10 py-6 transition-all duration-300 `}
             >
@@ -66,7 +67,7 @@ const Column = ({ column, index}) => {
                 >
                     {filtered_cards.length > 0 ? (
                         <div className=" min-h-fit w-full flex justify-center flex-wrap gap-20">
-                            {filtered_cards.map((card) => {
+                            {filtered_cards.map((card,index) => {
                                 return (
                                     <Card
                                         key={card.id}
